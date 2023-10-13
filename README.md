@@ -1,6 +1,7 @@
 # quarto-svgbob
 
-Render svgbob diagrams directly in your quarto documents. 
+Render [svgbob](https://github.com/ivanceras/svgbob) diagrams directly in your [quarto](quarto.org/)
+documents.
 
 ## Installing
 
