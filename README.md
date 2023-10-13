@@ -44,3 +44,5 @@ Make sure you have `svgbob` installed. `svgbob_cli` must be available in your PA
 ## Example
 
 Here is the source code for a minimal example: [example.qmd](example.qmd).
+ 
+See this for HTML preview: https://kdheepak.com/quarto-svgbob/
