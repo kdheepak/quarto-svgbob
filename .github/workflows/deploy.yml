@@ -1,0 +1,44 @@
+name: deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  publish:
+    name: website
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Cache cargo installs
+        uses: actions/cache@v3
+        id: cache-cargo
+        with:
+          path: |
+            ~/.cargo/
+          key: ${{ runner.os }}-cargo
+      - name: Cargo install
+        run: |
+          cargo install svgbob_cli --force
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        if: steps.cache-cargo.outputs.cache-hit != 'true'
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
+          tinytex: true
+
+      - name: Check Quarto install
+        run: quarto check install
+
+      - name: Publish to GitHub Pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          path: example.qmd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
