@@ -1,5 +1,7 @@
 # quarto-svgbob
 
+Render svgbob diagrams directly in your quarto documents. 
+
 ## Installing
 
 ```bash
