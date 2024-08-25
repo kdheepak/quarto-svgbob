@@ -45,12 +45,8 @@ function Render(elem)
 end
 
 function InsertSvgLatex(svg_data)
-	local name = 'assets/'
-	local isok, errstr, errcode = os.rename(name, name)
-	if isok == nil then
-		if errcode ~= 13 then
-			os.execute("mkdir assets")
-		end
+	if not os.exists("assets/") then
+		os.mkdir("assets/")
 	end
 	local file_name = "assets/fig_" .. tostring(fig)
 	local file = io.open(file_name .. ".svg",'w')
@@ -84,7 +80,7 @@ function RenderCode(elem)
 	end
 end
 
--- Taken from: https://github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
+-- Taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
 -- https://github.com/mokeyish/obsidian-enhancing-export/blob/16cdb17ef673e822e03e6d270aa33b28079774cc/lua/polyfill.lua#L53
 os.mkdir = function(dir)
 	if os.exists(dir) then
@@ -98,7 +94,7 @@ os.mkdir = function(dir)
 	end
   end
 
--- Taken from: https://github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
+-- Taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
 -- https://github.com/mokeyish/obsidian-enhancing-export/blob/16cdb17ef673e822e03e6d270aa33b28079774cc/lua/polyfill.lua
   os.exists = function(path)
 	if os.platform == "Windows" then
