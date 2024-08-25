@@ -64,7 +64,7 @@ end
 function RenderCodeBlock(elem)
 	local data = Render(elem)
 	if data ~= nil then
-		if FORMAT:match 'latex' then
+		if FORMAT:match 'latex' or 'beamer' then
 			return InsertSvgLatex(data)
 		else
 			return pandoc.Para({ pandoc.RawInline("html", data) })
