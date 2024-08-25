@@ -78,7 +78,7 @@ function RenderCode(elem)
 	elem.text = elem.text:gsub("\\n.", "\n")
 	local data = Render(elem)
 	if data ~= nil then
-			return pandoc.RawInline("html", data)
+		return pandoc.RawInline("html", data)
 	else
 		return nil
 	end
