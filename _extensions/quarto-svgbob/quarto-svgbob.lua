@@ -56,7 +56,7 @@ function InsertSvgLatex(svg_data)
 	local file = io.open(file_name .. ".svg",'w')
 	file:write(svg_data)
 	file:close()
-	pandoc.pipe("inkscape", { "--export-type=png", file_name  .. ".svg" }, "")
+	pandoc.pipe("inkscape", { "--export-type=png", "--export-dpi=300", file_name  .. ".svg" }, "")
 	fig = fig + 1
 	return pandoc.Para({pandoc.Image({}, file_name  .. ".png")})
 end
