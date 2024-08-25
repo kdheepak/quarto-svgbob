@@ -1,3 +1,5 @@
+fig = 1
+
 local pandoc = require("pandoc")
 local mmdc = os.getenv("MMDC") or pandoc.system.get_working_directory() .. "/node_modules/.bin/mmdc"
 local filetype = "svg"
@@ -42,20 +44,41 @@ function Render(elem)
 	return nil
 end
 
+function InsertSvgLatex(svg_data)
+	local name = 'assets/'
+	local isok, errstr, errcode = os.rename(name, name)
+	if isok == nil then
+		if errcode ~= 13 then
+			os.execute("mkdir assets")
+		end
+	end
+	local file_name = "assets/fig_" .. tostring(fig)
+	local file = io.open(file_name .. ".svg",'w')
+	file:write(svg_data)
+	file:close()
+	pandoc.pipe("inkscape", { "--export-type=png", file_name  .. ".svg" }, "")
+	fig = fig + 1
+	return pandoc.Para({pandoc.Image({}, file_name  .. ".png")})
+end
+
 function RenderCodeBlock(elem)
 	local data = Render(elem)
 	if data ~= nil then
-		return pandoc.Para({ pandoc.RawInline("html", data) })
+		if FORMAT:match 'latex' then
+			return InsertSvgLatex(data)
+		else
+			return pandoc.Para({ pandoc.RawInline("html", data) })
+		end
 	else
 		return nil
 	end
 end
-
+ 
 function RenderCode(elem)
 	elem.text = elem.text:gsub("\\n.", "\n")
 	local data = Render(elem)
 	if data ~= nil then
-		return pandoc.RawInline("html", data)
+			return pandoc.RawInline("html", data)
 	else
 		return nil
 	end
