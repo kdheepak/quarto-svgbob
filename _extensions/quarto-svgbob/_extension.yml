@@ -1,6 +1,7 @@
 title: quarto-svgbob
-author: Dheepak Krishnamurthy
-      # Fernando Martínez Santa
+authors: 
+  - Dheepak Krishnamurthy
+  - Fernando Martínez Santa
 version: 2.0.0
 quarto-required: ">=1.4.0"
 contributes:
