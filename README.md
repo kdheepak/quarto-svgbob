@@ -47,3 +47,19 @@ Make sure you have `svgbob` installed. `svgbob_cli` must be available in your PA
 Here is the source code for a minimal example: [example.qmd](example.qmd).
  
 See this for HTML preview: https://kdheepak.com/quarto-svgbob/
+
+
+## For PDF output
+
+If the pdf output format is enabled, you can insert svgbob diagrams via `inkscape`:
+
+```markdown
+---
+title: "My Document"
+filters:
+  - quarto-svgbob
+format: pdf
+---
+```
+
+In that case make sure you have `inkscape` installed and available in your PATH.
