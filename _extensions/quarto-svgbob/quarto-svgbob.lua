@@ -18,9 +18,12 @@ local renderer = {
 		return data
 	end,
 	render_svgbob = function(text)
-		-- io.stderr:write("svgbob found: " .. text .. "\n")
+		-- io.stderr:write("svgbob found: " .. text .. "\n")			
 		local params = {}
 		local cmd = { "svgbob_cli", params, text }
+		if not ProgramExists("svgbob_cli") then	-- svgbob_cli and svgbob allowed
+			cmd[1] = "svgbob"
+		end
 		local data = pandoc.pipe(cmd[1], cmd[2], cmd[3])
 		return data
 	end,
@@ -42,6 +45,24 @@ function Render(elem)
 		end
 	end
 	return nil
+end
+
+function ProgramExists(program)
+    if os.platform == "Windows" then
+    	local data = os.execute("where " .. program)
+		if string.match(data, "Could not find") ~= nil then
+			return false
+		else
+			return true
+		end
+    else
+    	local data = os.execute("which " .. program .. " > /dev/null 2>&1")
+		if data == nil then
+			return false
+		else
+			return true
+		end
+    end
 end
 
 function InsertSvgLatex(svg_data)
@@ -80,7 +101,7 @@ function RenderCode(elem)
 	end
 end
 
--- Taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
+-- Function taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
 -- https://github.com/mokeyish/obsidian-enhancing-export/blob/16cdb17ef673e822e03e6d270aa33b28079774cc/lua/polyfill.lua#L53
 os.mkdir = function(dir)
 	if os.exists(dir) then
@@ -94,19 +115,19 @@ os.mkdir = function(dir)
 	end
   end
 
--- Taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
+-- Function taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
 -- https://github.com/mokeyish/obsidian-enhancing-export/blob/16cdb17ef673e822e03e6d270aa33b28079774cc/lua/polyfill.lua
-  os.exists = function(path)
-	if os.platform == "Windows" then
-	  path = string.gsub(path, "/", "\\")
-	  path = os.text.toencoding(path)
-	  local _, _, code = os.execute('if exist "' .. path .. '" (exit 0) else (exit 1)')
-	  return code == 0
-	else
-	  local _, _, code = os.execute('test -e "' .. path .. '"')
-	  return code == 0
-	end
-  end
 
+os.exists = function(path)
+	if os.platform == "Windows" then
+		path = string.gsub(path, "/", "\\")
+		path = os.text.toencoding(path)
+		local _, _, code = os.execute('if exist "' .. path .. '" (exit 0) else (exit 1)')
+		return code == 0
+	else
+		local _, _, code = os.execute('test -e "' .. path .. '"')
+		return code == 0
+	end
+end
 
 return { { CodeBlock = RenderCodeBlock, Code = RenderCode } }
