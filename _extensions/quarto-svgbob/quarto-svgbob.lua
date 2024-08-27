@@ -47,24 +47,6 @@ function Render(elem)
 	return nil
 end
 
-function ProgramExists(program)
-    if os.platform == "Windows" then
-    	local data = os.execute("where " .. program)
-		if string.match(data, "Could not find") ~= nil then
-			return false
-		else
-			return true
-		end
-    else
-    	local data = os.execute("which " .. program .. " > /dev/null 2>&1")
-		if data == nil then
-			return false
-		else
-			return true
-		end
-    end
-end
-
 function InsertSvgLatex(svg_data)
 	if not os.exists("assets/") then
 		os.mkdir("assets/")
@@ -81,7 +63,7 @@ end
 function RenderCodeBlock(elem)
 	local data = Render(elem)
 	if data ~= nil then
-		if FORMAT:match 'latex' or 'beamer' then
+		if FORMAT:match 'latex' or FORMAT:match 'beamer' then
 			return InsertSvgLatex(data)
 		else
 			return pandoc.Para({ pandoc.RawInline("html", data) })
@@ -102,7 +84,7 @@ function RenderCode(elem)
 end
 
 -- Function taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
--- https://github.com/mokeyish/obsidian-enhancing-export/blob/16cdb17ef673e822e03e6d270aa33b28079774cc/lua/polyfill.lua#L53
+-- https://github.com/mokeyish/obsidian-enhancing-export/blob/16cdb17ef673e822e03e6d270aa33b28079774cc/lua/polyfill.lua
 os.mkdir = function(dir)
 	if os.exists(dir) then
 	  return
@@ -117,7 +99,6 @@ os.mkdir = function(dir)
 
 -- Function taken from: github.com/mokeyish/obsidian-enhancing-export/lua/polyfill.lua
 -- https://github.com/mokeyish/obsidian-enhancing-export/blob/16cdb17ef673e822e03e6d270aa33b28079774cc/lua/polyfill.lua
-
 os.exists = function(path)
 	if os.platform == "Windows" then
 		path = string.gsub(path, "/", "\\")
@@ -128,6 +109,24 @@ os.exists = function(path)
 		local _, _, code = os.execute('test -e "' .. path .. '"')
 		return code == 0
 	end
+end
+
+function ProgramExists(program)
+    if os.platform == "Windows" then
+    	local data = os.execute("where " .. program)
+		if string.match(data, "Could not find") ~= nil then
+			return false
+		else
+			return true
+		end
+    else
+    	local data = os.execute("which " .. program .. " > /dev/null 2>&1")
+		if data == nil then
+			return false
+		else
+			return true
+		end
+    end
 end
 
 return { { CodeBlock = RenderCodeBlock, Code = RenderCode } }
